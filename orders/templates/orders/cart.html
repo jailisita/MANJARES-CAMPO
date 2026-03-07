@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carrito - CAMPOVERDE{% endblock %}
+
+{% block content %}
+<div class="container py-5 animate-up">
+    <div class="mb-5 border-start border-5 border-lettuce ps-4">
+        <h1 class="fw-800 display-4" style="color: var(--farm-green);">Tu Cesta Cosechada</h1>
+        <p class="text-muted fs-5 mb-0">Revisa tus tesoros de la tierra antes de finalizar.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="product-card p-0 overflow-hidden text-start border-2 shadow-sm"
+                style="border-radius: var(--radius-lg); background: var(--white);">
+                <div class="table-responsive">
+                    <table class="table mb-0 align-middle">
+                        <thead style="background: var(--light-cream);">
+                            <tr>
+                                <th class="ps-4 py-4 border-0 text-farm fw-800 uppercase small"
+                                    style="letter-spacing: 1px;">Producto</th>
+                                <th class="text-center py-4 border-0 text-farm fw-800 uppercase small"
+                                    style="letter-spacing: 1px;">Cant.</th>
+                                <th class="text-end py-4 border-0 text-farm fw-800 uppercase small"
+                                    style="letter-spacing: 1px;">Subtotal</th>
+                                <th class="pe-4 py-4 border-0"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in items %}
+                            <tr class="border-bottom border-light">
+                                <td class="ps-4 py-4">
+                                    <div class="d-flex align-items-center">
+                                        {% if i.product.image %}
+                                        <div class="p-1 bg-light rounded-4 me-3 shadow-sm border">
+                                            <img src="{{ i.product.image }}" class="rounded-4"
+                                                style="width: 75px; height: 75px; object-fit: cover;">
+                                        </div>
+                                        {% else %}
+                                        <div class="bg-light rounded-4 me-3 d-flex align-items-center justify-content-center border"
+                                            style="width: 75px; height: 75px;">
+                                            <i class="bi bi-flower1 text-muted fs-3"></i>
+                                        </div>
+                                        {% endif %}
+                                        <div>
+                                            <h6 class="mb-1 fw-800 text-dark fs-5">{{ i.product.name }}</h6>
+                                            <span
+                                                class="badge rounded-pill bg-cream text-lettuce fw-bold px-3">Orgánico</span>
+                                            <span class="text-muted small d-block mt-1">${{ i.product.price }}
+                                                c/u</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center py-4">
+                                    <div class="d-inline-flex align-items-center bg-light rounded-pill p-1 border">
+                                        <span class="fw-800 px-3 py-1">{{ i.quantity }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-end py-4 fw-800 fs-5" style="color: var(--farm-green);">
+                                    ${{ i.subtotal }}
+                                </td>
+                                <td class="pe-4 py-4 text-end">
+                                    <a href="/carrito/quitar/{{ i.product.id }}/"
+                                        class="btn btn-link text-chilli p-2 hover-chilli"
+                                        title="Eliminar este producto">
+                                        <i class="bi bi-trash3-fill fs-5"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <div class="py-5 animate-up">
+                                        <i class="bi bi-cart-x text-muted opacity-25" style="font-size: 7rem;"></i>
+                                        <h3 class="mt-4 fw-800 text-farm">¡Tu cesta parece un desierto!</h3>
+                                        <p class="text-muted mb-4">Aún no has añadido ninguna delicia natural.</p>
+                                        <a href="/"
+                                            class="btn-round btn-verde mt-2 text-decoration-none shadow-lg px-5">Regresar
+                                            al Huerto</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex align-items-center gap-2 text-muted small">
+                <i class="bi bi-shield-check-fill text-lettuce fs-4"></i>
+                <span>Tus datos y pedido están protegidos. Frescura garantizada o devolución total.</span>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="product-card p-4 border-2 shadow-lg sticky-top"
+                style="border-radius: var(--radius-lg); background: var(--white); top: 120px; z-index: 10;">
+                <h4 class="fw-800 mb-4 pb-2 border-bottom" style="color: var(--farm-green);">Detalle de Cosecha</h4>
+
+                <div class="d-flex justify-content-between mb-3 align-items-center">
+                    <span class="text-muted fw-bold">Subtotal fresco</span>
+                    <span class="fw-800 text-dark fs-5">${{ total }}</span>
+                </div>
+
+                {% if discount %}
+                <div class="d-flex justify-content-between mb-3 text-success align-items-center">
+                    <span class="small fw-bold">Descuento Semilla</span>
+                    <span class="fw-800">- ${{ discount }}</span>
+                </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-between mb-3 text-dark align-items-center">
+                    <span class="text-muted fw-bold">Transporte Ecológico</span>
+                    <span class="fw-800">
+                        {% if shipping == 0 %}
+                        <span class="badge bg-cream text-lettuce fw-800 px-3 border border-success">¡GRATIS!</span>
+                        {% else %}
+                        <span class="text-farm">${{ shipping }}</span>
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="bg-light rounded-4 p-3 my-4 border border-dashed text-center">
+                    <p class="small text-muted mb-0">🌱 Estás apoyando a <strong>3 familias</strong> de agricultores
+                        locales con este pedido.</p>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 pt-2 border-top">
+                    <span class="h5 mb-0 fw-800 text-dark">Total Final</span>
+                    <span class="h2 mb-0 fw-800" style="color: var(--farm-green);">${{ grand_total }}</span>
+                </div>
+
+                {% if wa_link %}
+                <a href="{{ wa_link }}" target="_blank"
+                    class="btn-round w-100 py-3 mb-3 d-flex align-items-center justify-content-center gap-3 shadow-lg"
+                    style="background: linear-gradient(135deg, var(--farm-green) 0%, #154632 100%); color: white;">
+                    <i class="bi bi-whatsapp fs-4"></i>
+                    <span class="fw-800 fs-5">Finalizar en WhatsApp</span>
+                </a>
+                <p class="text-center text-muted small px-3 mb-4">
+                    Al dar clic se abrirá un chat directo para coordinar tu entrega personalizada.
+                </p>
+                {% else %}
+                <div class="alert alert-warning border-0 rounded-4 small">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Falta configurar el número de contacto.
+                </div>
+                {% endif %}
+
+                <a href="/" class="btn-round w-100 py-3 text-center transition-all bg-cream fw-800"
+                    style="color: var(--farm-green); border: 2px solid var(--farm-green);">
+                    Continuar Cosechando
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-chilli:hover {
+        color: var(--chilli) !important;
+        transform: scale(1.2);
+    }
+
+    .uppercase {
+        text-transform: uppercase;
+    }
+</style>
+{% endblock %}

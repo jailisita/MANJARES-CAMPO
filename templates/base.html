@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CAMPOVERDE{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div><i class="bi bi-geo-alt-fill me-2"></i>Envío rápido a toda la ciudad</div>
+            <div class="d-none d-sm-block">
+                <span class="me-3"><i class="bi bi-clock-fill me-2"></i>Abiertos: 8:00 AM - 6:00 PM</span>
+                <span><i class="bi bi-whatsapp me-2"></i>Dudas: 800-CAMPO</span>
+            </div>
+        </div>
+    </div>
+
+    <header class="nav-custom sticky-top">
+        <div class="container">
+            <div class="row align-items-center g-3">
+                <div class="col-lg-3 col-6 d-flex align-items-center gap-2">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2329/2329865.png" alt="Logo" class="rounded-circle"
+                        style="width: 55px; height: 55px; border: 3px solid var(--light-cream);">
+                    <div style="line-height: 1;">
+                        <a href="/" class="text-decoration-none"><strong
+                                style="font-size: 24px; color: var(--farm-green); font-family: 'Quicksand', sans-serif;">Campo
+                                Verde</strong></a><br>
+                        <small
+                            style="color: var(--lettuce); font-weight: 800; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Orgánico
+                            & Fresco</small>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="search-bar mx-auto">
+                        <i class="bi bi-search text-muted me-2"></i>
+                        <input type="text" placeholder="¿Qué ingredientes frescos buscas hoy?">
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6 text-end d-flex align-items-center justify-content-end gap-3">
+                    <a href="/login/"
+                        class="text-decoration-none d-none d-md-flex align-items-center gap-2 text-muted fw-bold small">
+                        <i class="bi bi-person-circle fs-4"></i>
+                        <span>Entrar</span>
+                    </a>
+
+                    <a href="/carrito/"
+                        class="text-decoration-none d-flex align-items-center gap-3 bg-light rounded-pill px-3 py-2 border">
+                        <div class="position-relative">
+                            <i class="bi bi-basket3-fill fs-4 text-farm"></i>
+                            {% if cart_count %}
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                style="font-size: 0.6rem; border: 2px solid white;">
+                                {{ cart_count }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="d-none d-sm-block text-start" style="line-height: 1;">
+                            <small class="text-muted d-block fw-bold"
+                                style="font-size: 10px; text-transform: uppercase;">Mi Pedido</small>
+                            <strong class="text-farm">${{ cart_total|default:"0.00" }}</strong>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <nav class="mt-4 pt-3 border-top d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-4">
+                    <button class="btn-category-toggle d-flex align-items-center gap-2">
+                        <i class="bi bi-grid-fill fs-5"></i> NUESTRA COSECHA
+                    </button>
+                    <div class="d-none d-md-flex gap-4">
+                        <a href="/" class="text-decoration-none fw-800" style="color: var(--lettuce);">Catálogo</a>
+                        <a href="#" class="text-decoration-none text-muted fw-bold">Ofertas Flash</a>
+                        <a href="#" class="text-decoration-none text-muted fw-bold">Temporada</a>
+                        <a href="#" class="text-decoration-none text-muted fw-bold">Recetas Orgánicas</a>
+                    </div>
+                </div>
+                <div class="d-none d-lg-block" style="color: var(--pumpkin); font-weight: 800;">
+                    <i class="bi bi-lightning-charge-fill me-1"></i> Promo Almuerzo: -10%
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container text-center">
+            <p class="mb-2 fs-5 fw-bold">CAMPOVERDE</p>
+            <p class="text-secondary small">© 2024 Vivero Campoverde - Todos los derechos reservados.</p>
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="#" class="text-white fs-4"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="text-white fs-4"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="text-white fs-4"><i class="bi bi-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
