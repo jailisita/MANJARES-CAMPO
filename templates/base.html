@@ -101,7 +101,8 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
     padding: 8px 18px;
     display: flex;
     align-items: center;
-    width: 450px;
+    width: 100%;
+    max-width: 450px;
     transition: 0.3s;
 }
 
@@ -132,6 +133,16 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
     position: sticky;
     top: 0;
     z-index: 1050;
+}
+
+@media (max-width: 991.98px) {
+    .nav-pill {
+        padding: 12px 20px;
+    }
+    .search-app {
+        width: 100%;
+        margin: 10px 0;
+    }
 }
 
 .logo-app {
@@ -221,28 +232,85 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
     transform: translateX(5px);
 }
 
+/* FAB BUTTONS */
+.fab-app {
+    position: fixed;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF !important;
+    font-size: 1.8rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    transition: var(--transition);
+    z-index: 1040;
+    border: none;
+}
+
+.fab-app:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+#cbt-panel {
+    position: fixed;
+    right: 30px;
+    bottom: 110px;
+    width: 350px;
+    max-width: 90vw;
+    display: none;
+    z-index: 1050;
+    padding: 20px;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 767.98px) {
+    .fab-app {
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    #cbt-panel {
+        right: 20px;
+        bottom: 85px; /* Ajustado para que no tape los botones o se alinee mejor */
+    }
+}
+
 
 </style>
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
-    <header class="nav-pill">
-        <a href="{% url 'catalog' %}" class="logo-app">
-            <div class="logo-icon">
-                <i class="bi bi-box-fill"></i>
-            </div>
-            Manjares
-        </a>
+    <header class="nav-pill flex-wrap">
+        <div class="d-flex align-items-center justify-content-between w-100 w-lg-auto mb-2 mb-lg-0 gap-3">
+            <a href="{% url 'catalog' %}" class="logo-app">
+                <div class="logo-icon">
+                    <i class="bi bi-box-fill"></i>
+                </div>
+                Manjares
+            </a>
 
-        <div class="d-none d-lg-block">
-            <form action="/" method="GET" class="search-app">
+            <!-- Mobile Search Toggle -->
+            <button class="btn d-lg-none p-0 text-farm fs-3" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+
+        <div class="collapse d-lg-block flex-grow-1 mx-lg-4" id="searchCollapse">
+            <form action="/" method="GET" class="search-app mx-auto">
                 <i class="bi bi-search text-secondary me-2"></i>
                 <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="Buscar productos frescos...">
             </form>
         </div>
 
-        <div class="nav-links d-flex align-items-center gap-3">
+        <div class="nav-links d-flex align-items-center gap-2 gap-sm-3 ms-auto">
             {% if user.is_authenticated %}
 
             <div class="dropdown">
@@ -307,17 +375,17 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
     </footer>
 
     <!-- Botón Whatsapp -->
-    <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" class="fab-app" style="right: 30px; bottom: 110px; background: #25D366; text-decoration: none;">
+    <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" class="fab-app" style="bottom: 110px; background: #25D366; text-decoration: none;">
         <i class="bi bi-whatsapp"></i>
     </a>
 
     <!-- Botón Chatbot -->
-    <button id="cbt-toggle" class="fab-app" style="right: 30px; bottom: 30px; background: var(--brand-blue);">
+    <button id="cbt-toggle" class="fab-app" style="bottom: 30px; background: #0D6EFD;">
         <i class="bi bi-robot"></i>
     </button>
 
     <!-- Chatbot Burbuja -->
-    <div id="cbt-panel" class="bento" style="position: fixed; right: 30px; bottom: 110px; width: 350px; max-width: 90vw; display: none; z-index: 1050; padding: 20px; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15);">
+    <div id="cbt-panel" class="bento">
         <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
             <h5 class="m-0 d-flex align-items-center gap-2"><i class="bi bi-robot text-primary fs-3"></i> Asistente</h5>
             <button id="cbt-close" class="btn btn-sm btn-light rounded-circle"><i class="bi bi-x-lg"></i></button>

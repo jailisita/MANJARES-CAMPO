@@ -60,10 +60,36 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
     left: 0; top: 0;
     background: #FFF;
     border-right: 2px solid var(--brand-light);
-    z-index: 1000;
+    z-index: 1050;
     display: flex;
     flex-direction: column;
-    padding: 20px 15px; /* Reducido padding */
+    padding: 20px 15px;
+    transition: var(--transition);
+}
+
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        left: calc(-1 * var(--sidebar-width));
+    }
+    .admin-sidebar.show {
+        left: 0;
+        box-shadow: 0 0 50px rgba(0,0,0,0.2);
+    }
+    .admin-main {
+        margin-left: 0 !important;
+        padding: 20px !important;
+    }
+    .sidebar-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1040;
+        display: none;
+    }
+    .sidebar-overlay.show {
+        display: block;
+    }
 }
 
 .sidebar-bento {
@@ -209,10 +235,16 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
 </head>
 
 <body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- Sidebar -->
-    <div class="admin-sidebar">
+    <div class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-bento">
-            <div class="p-4 text-center">
+            <div class="p-4 text-center position-relative">
+                <button class="btn d-lg-none position-absolute top-0 end-0 m-2 text-farm" id="sidebarClose">
+                    <i class="bi bi-x-lg fs-4"></i>
+                </button>
                 <div class="d-inline-flex justify-content-center align-items-center rounded-circle mb-2" style="width: 60px; height: 60px; background: rgba(0, 242, 96, 0.15);">
                     <i class="bi bi-gear-fill fs-2 m-0" style="color: var(--brand-farm);"></i>
                 </div>
@@ -270,9 +302,14 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
     <!-- Main Content -->
     <div class="admin-main">
         <div class="admin-topbar d-flex justify-content-between align-items-center mb-5">
-            <div>
-                <h1 class="m-0 fs-2 fw-800 text-farm">{% block page_title %}Resumen Actividad{% endblock %}</h1>
-                <p class="text-muted m-0 small fw-semibold uppercase letters-wide">Panel Administrativo</p>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn d-lg-none p-0 text-farm fs-2" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div>
+                    <h1 class="m-0 fs-2 fw-800 text-farm">{% block page_title %}Resumen Actividad{% endblock %}</h1>
+                    <p class="text-muted m-0 small fw-semibold uppercase letters-wide d-none d-sm-block">Panel Administrativo</p>
+                </div>
             </div>
         </div>
 
@@ -289,6 +326,24 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('adminSidebar');
+            const toggle = document.getElementById('sidebarToggle');
+            const close = document.getElementById('sidebarClose');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+                document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+            }
+
+            if (toggle) toggle.addEventListener('click', toggleSidebar);
+            if (close) close.addEventListener('click', toggleSidebar);
+            if (overlay) overlay.addEventListener('click', toggleSidebar);
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
