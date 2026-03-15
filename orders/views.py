@@ -45,7 +45,7 @@ from .cart import Cart
 # --- VISTAS PÚBLICAS ---
 
 def cart_view(request):
-    """Vista principal del carrito con toda la lógica de cálculo y persistencia."""
+    """Vista principal del carrito con toda la lógica de cálculo y persistencia en sesión."""
     cart = Cart(request)
     items = list(cart)
     total = cart.get_total_price()
@@ -60,53 +60,62 @@ def cart_view(request):
     
     grand_total = total - discount + shipping_cost
     
-    # Persistencia del pedido para el Admin
-    order_id = None
-    if items:
-        # Manejo de usuario (Staff o Cliente Web)
-        if request.user.is_authenticated:
-            user = request.user
-        else:
-            user, _ = User.objects.get_or_create(username='cliente_web', defaults={'is_active': False})
-            
-        # Buscar orden activa en sesión
-        session_order_id = request.session.get('active_order_id')
-        order = None
-        if session_order_id:
-            order = Order.objects.filter(id=session_order_id, status='pending').first()
-            
-        if not order:
-            order = Order.objects.create(
-                customer=user,
-                status='pending',
-                total=grand_total,
-                delivery_method=shipping_opts.get('method', 'delivery'),
-                address=shipping_opts.get('address', '')
-            )
-            request.session['active_order_id'] = order.id
-        else:
-            order.total = grand_total
-            order.delivery_method = shipping_opts.get('method', 'delivery')
-            order.address = shipping_opts.get('address', '')
-            order.customer = user
-            order.save()
-            OrderItem.objects.filter(order=order).delete()
-            
-        for item in items:
-            OrderItem.objects.create(
-                order=order,
-                product=item['product'],
-                quantity=item['quantity'],
-                price=item['price']
-            )
-        order_id = order.id
+    ctx = {
+        "items": items,
+        "total": total,
+        "discount": discount,
+        "shipping": shipping_cost,
+        "grand_total": grand_total,
+        "shipping_opts": shipping_opts,
+        "zones": ShippingZone.objects.filter(active=True),
+    }
+    return render(request, "orders/cart.html", ctx)
 
-    # Configuración de WhatsApp
+@require_POST
+def checkout_whatsapp(request):
+    """Crea la orden en la base de datos y redirige a WhatsApp."""
+    cart = Cart(request)
+    items = list(cart)
+    if not items:
+        return redirect('catalog')
+
+    # 1. Calcular totales
+    total = cart.get_total_price()
+    discount_pct = Decimal(str(getattr(settings, "DISCOUNT_PERCENT", 0)))
+    discount = (total * (discount_pct / Decimal("100"))).quantize(Decimal("1."))
+    shipping_opts = request.session.get("shipping", {"method": "delivery", "zone_id": None, "address": ""})
+    shipping_cost = _get_shipping_cost(total - discount, shipping_opts)
+    grand_total = total - discount + shipping_cost
+
+    # 2. Manejo de usuario
+    if request.user.is_authenticated:
+        user = request.user
+    else:
+        user, _ = User.objects.get_or_create(username='cliente_web', defaults={'is_active': False})
+
+    # 3. Crear la Orden
+    order = Order.objects.create(
+        customer=user,
+        status='pending',
+        total=grand_total,
+        delivery_method=shipping_opts.get('method', 'delivery'),
+        address=shipping_opts.get('address', '')
+    )
+
+    # 4. Crear los Items de la Orden
+    for item in items:
+        OrderItem.objects.create(
+            order=order,
+            product=item['product'],
+            quantity=item['quantity'],
+            price=item['price']
+        )
+
+    # 5. Configuración de WhatsApp y Mensaje
     config = SiteConfiguration.objects.first()
     wa_number = config.whatsapp_number if config else getattr(settings, "WHATSAPP_NUMBER", "")
     wa_prefix = config.order_wa_prefix if config else "Hola!, quiero hacer este pedido"
     
-    # Generar mensaje de WhatsApp
     wa_msg = f"{wa_prefix}:\n\n"
     for i in items:
         wa_msg += f"- {i['quantity']} {i['product'].get_unit_display()} x {i['product'].name} = ${i['total_price']}\n"
@@ -125,22 +134,19 @@ def cart_view(request):
                 pass
         if shipping_opts.get('address'):
             wa_msg += f"Dirección: {shipping_opts['address']}\n"
-    if order_id:
-        wa_msg += f"\n(Orden: #{order_id})"
-        
-    wa_link = f"https://wa.me/{wa_number}?{urlencode({'text': wa_msg})}" if wa_number else ""
     
-    ctx = {
-        "items": items,
-        "total": total,
-        "discount": discount,
-        "shipping": shipping_cost,
-        "grand_total": grand_total,
-        "shipping_opts": shipping_opts,
-        "zones": ShippingZone.objects.filter(active=True),
-        "wa_link": wa_link,
-    }
-    return render(request, "orders/cart.html", ctx)
+    wa_msg += f"\n(Orden: #{order.id})"
+    
+    wa_link = f"https://wa.me/{wa_number}?{urlencode({'text': wa_msg})}" if wa_number else ""
+
+    # 6. Limpiar carrito y sesión de orden
+    cart.clear()
+    if 'active_order_id' in request.session:
+        del request.session['active_order_id']
+
+    if wa_link:
+        return redirect(wa_link)
+    return redirect('catalog')
 
 @require_POST
 def add_to_cart(request, product_id):
@@ -225,8 +231,19 @@ def quick_buy_product(request, product_id):
 
 @staff_member_required(login_url='login')
 def admin_orders_list(request):
+    query = request.GET.get('q')
     orders = Order.objects.all().order_by('-created_at')
-    return render(request, 'orders/admin_orders_list.html', {'orders': orders})
+    
+    if query:
+        if query.startswith('#'):
+            query = query[1:]
+        try:
+            orders = orders.filter(id=int(query))
+        except ValueError:
+            # Si no es un número, podríamos buscar por cliente o teléfono si fuera necesario
+            pass
+            
+    return render(request, 'orders/admin_orders_list.html', {'orders': orders, 'search_query': query})
 
 @staff_member_required(login_url='login')
 def admin_order_detail(request, order_id):

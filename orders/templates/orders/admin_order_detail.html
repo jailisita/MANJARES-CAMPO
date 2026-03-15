@@ -5,6 +5,23 @@
 
 {% block content %}
 <div class="row g-4 animate-up">
+    <!-- Status Header -->
+    <div class="col-12">
+        <div class="d-flex align-items-center gap-3">
+            <h2 class="fw-800 m-0 text-farm">Pedido #{{ order.id }}</h2>
+            <span class="badge rounded-pill px-4 py-2 fs-6
+                {% if order.status == 'pending' %}bg-warning text-dark
+                {% elif order.status == 'confirmed' %}bg-info text-white
+                {% elif order.status == 'preparing' %}bg-primary
+                {% elif order.status == 'sent' %}bg-lettuce
+                {% elif order.status == 'delivered' %}bg-dark
+                {% elif order.status == 'cancelled' %}bg-chilli text-white
+                {% endif %}">
+                {{ order.get_status_display }}
+            </span>
+        </div>
+    </div>
+
     <!-- Main Detail Section -->
     <div class="col-lg-8">
         <div class="card p-5 rounded-4 shadow-sm border-0 mb-4">

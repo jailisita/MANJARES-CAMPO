@@ -119,11 +119,12 @@
                     <span class="fs-2 fw-black" style="color: var(--brand-lettuce); font-family: var(--font-app);">${{ grand_total }}</span>
                 </div>
 
-                {% if wa_link %}
-                <a href="{{ wa_link }}" target="_blank" class="btn-app btn-primary-app w-100 py-3 d-flex justify-content-center text-white" style="background: #25D366; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);">
-                    <i class="bi bi-whatsapp me-2 fs-5"></i> Pedir por WhatsApp
-                </a>
-                {% endif %}
+                <form action="{% url 'checkout_whatsapp' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-app btn-primary-app w-100 py-3 d-flex justify-content-center text-white border-0" style="background: #25D366; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);">
+                        <i class="bi bi-whatsapp me-2 fs-5"></i> Pedir por WhatsApp
+                    </button>
+                </form>
             </div>
         </div>
     </div>
