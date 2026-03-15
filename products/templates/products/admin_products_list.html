@@ -4,10 +4,10 @@
 {% block page_title %}Inventario de Productos{% endblock %}
 
 {% block content %}
-<div class="card p-4 rounded-4 shadow-sm border-0 animate-up">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="card p-3 p-md-4 rounded-4 shadow-sm border-0 animate-up">
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
         <h5 class="fw-800 mb-0" style="font-family: var(--font-head);">Listado de Productos</h5>
-        <a href="{% url 'admin_product_create' %}" class="btn-lettuce rounded-pill px-4 fw-bold shadow-sm btn-animate">
+        <a href="{% url 'admin_product_create' %}" class="btn-lettuce rounded-pill px-4 py-2 fw-bold shadow-sm btn-animate w-100 w-sm-auto text-center">
             <i class="bi bi-plus-lg me-2"></i>Nuevo Producto
         </a>
     </div>

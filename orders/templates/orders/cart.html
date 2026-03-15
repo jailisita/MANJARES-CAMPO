@@ -16,7 +16,7 @@
         <div class="col-lg-7">
             
             {% for item in items %}
-            <div class="bento d-flex align-items-center gap-4 mb-3 p-3 p-md-4">
+            <div class="bento d-flex flex-column flex-md-row align-items-center gap-3 gap-md-4 mb-3 p-3 p-md-4 text-center text-md-start">
                 <div class="prod-img-box m-0" style="width: 100px; height: 100px; flex-shrink: 0; background: var(--brand-light);">
                     {% if item.product.image %}
                     <img src="{{ item.product.image.url }}" class="w-75 h-75 object-fit-contain mix-blend-multiply">
@@ -25,13 +25,13 @@
                     {% endif %}
                 </div>
                 
-                <div class="flex-grow-1">
+                <div class="flex-grow-1 w-100">
                     <h4 class="fs-5 fw-bold mb-1" style="font-family: var(--font-head);">{{ item.product.name }}</h4>
                     <p class="text-secondary fw-semibold m-0">${{ item.price }} c/u</p>
                 </div>
 
-                <div class="text-center">
-                    <form action="{% url 'update_cart_item' item.product.id %}" method="POST" class="d-flex align-items-center bg-light border-0 px-2 py-1 rounded-pill mb-2 shadow-sm" style="background: var(--brand-light) !important;">
+                <div class="d-flex align-items-center justify-content-center gap-3 w-100 w-md-auto">
+                    <form action="{% url 'update_cart_item' item.product.id %}" method="POST" class="d-flex align-items-center bg-light border-0 px-2 py-1 rounded-pill shadow-sm" style="background: var(--brand-light) !important;">
                         {% csrf_token %}
                         <input type="number" name="qty" value="{{ item.quantity }}" min="1"
                             class="border-0 bg-transparent text-center fw-bold"
@@ -39,7 +39,7 @@
                     </form>
                 </div>
 
-                <div class="text-end" style="min-width: 90px;">
+                <div class="text-md-end w-100 w-md-auto" style="min-width: 90px;">
                     <h4 class="fw-black mb-1" style="color: var(--brand-lettuce); font-family: var(--font-app);">${{ item.total_price }}</h4>
                     <a href="{% url 'remove_from_cart' item.product.id %}" class="text-muted small fw-bold text-decoration-none" style="color: var(--brand-pumpkin) !important;">Eliminar</a>
                 </div>

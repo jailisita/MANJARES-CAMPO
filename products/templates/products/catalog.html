@@ -7,35 +7,35 @@
 
 <!-- OFFERS MODULE (Dynamic) -->
 {% if offer_products and not search_query and not selected_cat %}
-<div class="row g-4 mb-5 pop-in">
+<div class="row g-3 g-md-4 mb-5 pop-in">
     <div class="col-12">
-        <div class="bento p-4 p-md-5" style="background: linear-gradient(135deg, #FF9966, #FF5E62); border: none;">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="bento p-3 p-md-5" style="background: linear-gradient(135deg, #FF9966, #FF5E62); border: none;">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
                 <div>
-                    <h2 class="fw-800 text-white m-0" style="font-family: var(--font-head);"><i class="bi bi-fire me-2"></i>Ofertas del Día</h2>
-                    <p class="text-white opacity-90 m-0 fw-medium">Productos frescos con descuentos imperdibles.</p>
+                    <h2 class="fw-800 text-white m-0 fs-3 fs-md-2" style="font-family: var(--font-head);"><i class="bi bi-fire me-2"></i>Ofertas del Día</h2>
+                    <p class="text-white opacity-90 m-0 fw-medium small">Productos frescos con descuentos imperdibles.</p>
                 </div>
-                <a href="{% url 'offers' %}" class="btn btn-light rounded-pill px-4 fw-bold text-danger shadow-sm">Ver Todo</a>
+                <a href="{% url 'offers' %}" class="btn btn-light rounded-pill px-4 fw-bold text-danger shadow-sm w-100 w-sm-auto">Ver Todo</a>
             </div>
             
-            <div class="row g-3">
+            <div class="row g-2 g-md-3">
                 {% for p in offer_products %}
                 <div class="col-6 col-md-3">
-                    <div class="bg-white rounded-4 p-3 h-100 shadow-sm bento-hover position-relative overflow-hidden">
-                        <span class="position-absolute top-0 end-0 bg-danger text-white px-3 py-1 fw-bold small rounded-bl-4" style="border-bottom-left-radius: 15px;">OFERTA</span>
-                        <div class="text-center mb-2" style="height: 100px; display: flex; align-items: center; justify-content: center;">
+                    <div class="bg-white rounded-4 p-2 p-md-3 h-100 shadow-sm bento-hover position-relative overflow-hidden">
+                        <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 fw-bold extra-small rounded-bl-4" style="border-bottom-left-radius: 12px; font-size: 0.6rem;">OFERTA</span>
+                        <div class="text-center mb-2" style="height: 80px; height: md-100px; display: flex; align-items: center; justify-content: center;">
                             {% if p.image %}
                             <img src="{{ p.image.url }}" class="mw-100 mh-100 object-fit-contain">
                             {% else %}
                             <i class="bi bi-image text-muted opacity-25 fs-1"></i>
                             {% endif %}
                         </div>
-                        <h6 class="fw-bold text-farm mb-1 text-truncate">{{ p.name }}</h6>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="text-danger fw-800 fs-5">${{ p.offer_price }}</span>
-                            <span class="text-muted text-decoration-line-through small">${{ p.price }}</span>
+                        <h6 class="fw-bold text-farm mb-1 text-truncate" style="font-size: 0.85rem;">{{ p.name }}</h6>
+                        <div class="d-flex flex-wrap align-items-center gap-1 gap-md-2">
+                            <span class="text-danger fw-800 fs-6 fs-md-5">${{ p.offer_price }}</span>
+                            <span class="text-muted text-decoration-line-through extra-small">${{ p.price }}</span>
                         </div>
-                        <a href="{{ p.wa_link }}" target="_blank" class="btn btn-success btn-sm w-100 rounded-pill mt-2 fw-bold">
+                        <a href="{{ p.wa_link }}" target="_blank" class="btn btn-success btn-sm w-100 rounded-pill mt-2 fw-bold" style="font-size: 0.75rem;">
                             <i class="bi bi-whatsapp"></i> Pedir
                         </a>
                     </div>
@@ -51,21 +51,21 @@
 {% if not search_query and not selected_cat and not offer_products %}
 <div class="row g-4 mb-5 pop-in">
     <div class="col-lg-12">
-        <div class="bento d-flex flex-column justify-content-center h-100 p-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, var(--brand-lettuce), var(--brand-farm)); border: none;">
+        <div class="bento d-flex flex-column justify-content-center h-100 p-4 p-md-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, var(--brand-lettuce), var(--brand-farm)); border: none;">
             <div class="position-relative z-index-1" style="max-width: 600px;">
-                <h1 class="display-5 mb-3 text-white" style="font-family: var(--font-head);">Sabor que nace en casa.</h1>
+                <h1 class="display-6 display-md-5 mb-3 text-white" style="font-family: var(--font-head);">Sabor que nace en casa.</h1>
                 <p class="fs-6 fw-medium text-white opacity-90 mb-0" style="line-height: 1.6;">
                     Directo del productor a tu mesa. Descubre la frescura real con precios que cuidan tu bolsillo.
                 </p>
             </div>
-            <i class="bi bi-flower1 position-absolute text-white opacity-10" style="font-size: 15rem; bottom: -30px; right: -30px;"></i>
+            <i class="bi bi-flower1 position-absolute text-white" style="font-size: 8rem; font-size: md-15rem; bottom: -20px; right: -20px; opacity: 0.05; pointer-events: none;"></i>
         </div>
     </div>
 </div>
 {% endif %}
 
 <!-- CATEGORY PILLS -->
-<div class="d-flex gap-2 overflow-auto hide-scrollbar mb-5 pb-2 pop-in" style="animation-delay: 0.1s;">
+<div class="d-flex gap-2 overflow-auto mb-5 pb-2 pop-in" style="animation-delay: 0.1s;">
     <a href="/" class="btn-app {% if active_nav == 'catalog' and not selected_cat %}btn-primary-app{% else %}bg-white shadow-sm{% endif %} px-4 text-nowrap">
         <i class="bi bi-shop me-2"></i> Todo el Mercado
     </a>
@@ -77,52 +77,52 @@
 </div>
 
 <!-- PRODUCTS GRID BENTO -->
-<div class="row g-4 mb-5">
+<div class="row g-3 g-md-4 mb-5">
     {% for p in products %}
     <div class="col-6 col-md-4 col-lg-3 pop-in" style="--delay: {{ forloop.counter0|add:2 }}00ms; animation-delay: var(--delay);">
-        <div class="bento bento-hover d-flex flex-column p-3 p-md-4">
+        <div class="bento bento-hover d-flex flex-column p-2 p-md-4 h-100">
             
-            <div class="prod-img-box mb-3">
+            <div class="prod-img-box mb-3" style="height: 140px; height: md-180px;">
                 {% if p.is_on_offer %}
-                <span class="deal-tag position-absolute top-0 start-0 m-2 z-index-2" style="background: var(--brand-chilli);">OFERTA</span>
+                <span class="deal-tag position-absolute top-0 start-0 m-2 z-index-2" style="background: var(--brand-chilli); font-size: 0.6rem;">OFERTA</span>
                 {% endif %}
                 
                 {% if p.image %}
-                <img src="{{ p.image.url }}" alt="{{ p.name }}">
+                <img src="{{ p.image.url }}" alt="{{ p.name }}" class="mw-100 mh-100 object-fit-contain">
                 {% else %}
-                <i class="bi bi-image" style="font-size: 3rem; color: rgba(0,0,0,0.1);"></i>
+                <i class="bi bi-image" style="font-size: 2rem; color: rgba(0,0,0,0.1);"></i>
                 {% endif %}
             </div>
 
         <div class="flex-grow-1 d-flex flex-column">
                 <a href="#" class="text-decoration-none text-primary-emphasis mb-1">
-                    <h4 class="fs-5 fw-bold m-0 lh-sm" style="color: var(--text-main);">{{ p.name }}</h4>
+                    <h4 class="fs-6 fs-md-5 fw-bold m-0 lh-sm" style="color: var(--text-main);">{{ p.name }}</h4>
                 </a>
-                <p class="text-secondary small fw-medium mb-1 lh-sm">{{ p.description|default:"Fresco y delicioso, seleccionado para ti."|truncatechars:45 }}</p>
-                <p class="text-muted x-small fw-bold uppercase letters-wide mb-3">{{ p.get_unit_display }}</p>
+                <p class="text-secondary small fw-medium mb-1 lh-sm d-none d-md-block">{{ p.description|default:"Fresco y delicioso, seleccionado para ti."|truncatechars:45 }}</p>
+                <p class="text-muted extra-small fw-bold uppercase letters-wide mb-2 mb-md-3" style="font-size: 0.65rem;">{{ p.get_unit_display }}</p>
                 
-                <div class="d-flex justify-content-between align-items-center mt-auto">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mt-auto gap-2">
                     <div>
                         {% if p.is_on_offer and p.offer_price %}
-                        <span class="fs-4 fw-bold text-danger">${{ p.offer_price }}</span>
-                        <span class="d-block text-muted text-decoration-line-through" style="font-size: 0.75rem; margin-top: -4px;">${{ p.price }}</span>
+                        <span class="fs-5 fs-md-4 fw-bold text-danger">${{ p.offer_price }}</span>
+                        <span class="d-block text-muted text-decoration-line-through" style="font-size: 0.7rem; margin-top: -4px;">${{ p.price }}</span>
                         {% else %}
-                        <span class="fs-4 fw-bold" style="color: var(--brand-farm);">${{ p.price }}</span>
-                        <span class="d-block text-muted" style="font-size: 0.7rem; font-weight: 700; margin-top: -4px;">PRECIO FINAL</span>
+                        <span class="fs-5 fs-md-4 fw-bold" style="color: var(--brand-farm);">${{ p.price }}</span>
+                        <span class="d-block text-muted" style="font-size: 0.6rem; font-weight: 700; margin-top: -4px;">PRECIO FINAL</span>
                         {% endif %}
                     </div>
                     
-                    <div class="d-flex gap-2">
-                        <form action="{% url 'add_to_cart' p.id %}" method="POST" class="m-0">
+                    <div class="d-flex gap-1 gap-md-2 w-100 w-md-auto">
+                        <form action="{% url 'add_to_cart' p.id %}" method="POST" class="m-0 flex-grow-1 flex-md-grow-0">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-lettuce rounded-circle shadow-sm" style="width: 44px; height: 44px; padding: 0;" title="Agregar al carrito">
-                                <i class="bi bi-cart-plus fs-5"></i>
+                            <button type="submit" class="btn btn-lettuce rounded-circle-custom shadow-sm w-100" style="width: 38px; height: 38px; width: md-44px; height: md-44px; padding: 0; border-radius: 12px;" title="Agregar al carrito">
+                                <i class="bi bi-cart-plus fs-6 fs-md-5"></i>
                             </button>
                         </form>
                         
-                        <a href="{{ p.wa_link }}" target="_blank" class="p-0 border-0 bg-transparent text-primary hover-accent text-decoration-none" style="transition: 0.3s;" title="Comprar por WhatsApp">
-                            <div class="logo-icon" style="width: 44px; height: 44px;">
-                                <i class="bi bi-whatsapp fs-5"></i>
+                        <a href="{{ p.wa_link }}" target="_blank" class="p-0 border-0 bg-transparent text-primary hover-accent text-decoration-none flex-grow-1 flex-md-grow-0" style="transition: 0.3s;" title="Comprar por WhatsApp">
+                            <div class="logo-icon" style="width: 38px; height: 38px; width: md-44px; height: md-44px; border-radius: 12px;">
+                                <i class="bi bi-whatsapp fs-6 fs-md-5"></i>
                             </div>
                         </a>
                     </div>

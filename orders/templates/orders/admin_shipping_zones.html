@@ -7,26 +7,26 @@
 <div class="row g-4 animate-up">
     <!-- Form to add new zone -->
     <div class="col-lg-4">
-        <div class="card p-4 rounded-4 shadow-sm border-0 h-100">
+        <div class="card p-3 p-md-4 rounded-4 shadow-sm border-0 h-100">
             <h5 class="fw-800 mb-4 border-bottom pb-3" style="font-family: var(--font-head);"><i class="bi bi-plus-circle me-2 text-lettuce"></i>Nueva Zona</h5>
             <form method="POST">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label class="form-label small fw-bold uppercase text-muted">Nombre de la Zona</label>
-                    <input type="text" name="name" class="form-control rounded-pill px-3" placeholder="Ej: Zona Norte" required>
+                    <input type="text" name="name" class="form-control rounded-pill px-3 py-2" placeholder="Ej: Zona Norte" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-bold uppercase text-muted">Costo de Envío</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0 rounded-start-pill">$</span>
-                        <input type="number" name="cost" class="form-control border-start-0 rounded-end-pill px-3" placeholder="0.00" required>
+                        <span class="input-group-text bg-light border-end-0 rounded-start-pill px-3">$</span>
+                        <input type="number" name="cost" class="form-control border-start-0 rounded-end-pill px-3 py-2" placeholder="0.00" required>
                     </div>
                 </div>
                 <div class="mb-4">
                     <label class="form-label small fw-bold uppercase text-muted">Notas (Opcional)</label>
-                    <textarea name="notes" class="form-control rounded-4 px-3" rows="2" placeholder="Ej: Entrega solo mañanas"></textarea>
+                    <textarea name="notes" class="form-control rounded-4 px-3 py-2" rows="2" placeholder="Ej: Entrega solo mañanas"></textarea>
                 </div>
-                <button type="submit" class="btn-lettuce w-100 rounded-pill fw-bold py-2 shadow-sm">
+                <button type="submit" class="btn-lettuce w-100 rounded-pill fw-bold py-3 shadow-sm">
                     <i class="bi bi-check-lg me-2"></i>Guardar Zona
                 </button>
             </form>
@@ -35,24 +35,24 @@
 
     <!-- List of zones -->
     <div class="col-lg-8">
-        <div class="card p-4 rounded-4 shadow-sm border-0 h-100">
+        <div class="card p-3 p-md-4 rounded-4 shadow-sm border-0 h-100">
             <h5 class="fw-800 mb-4 border-bottom pb-3" style="font-family: var(--font-head);"><i class="bi bi-truck me-2 text-farm"></i>Tarifas Actuales</h5>
             <div class="table-responsive">
                 <table class="table align-middle">
-                    <thead>
+                    <thead class="bg-light text-muted small uppercase letters-wide">
                         <tr>
-                            <th>Zona</th>
-                            <th>Costo</th>
-                            <th>Estado</th>
-                            <th class="text-end">Acciones</th>
+                            <th class="border-0 py-3 ps-3">Zona</th>
+                            <th class="border-0 py-3">Costo</th>
+                            <th class="border-0 py-3">Estado</th>
+                            <th class="border-0 py-3 text-end pe-3">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for zone in zones %}
                         <tr>
-                            <td>
+                            <td class="ps-3">
                                 <div class="fw-bold text-farm">{{ zone.name }}</div>
-                                <div class="small text-muted">{{ zone.notes }}</div>
+                                <div class="small text-muted">{{ zone.notes|truncatechars:30 }}</div>
                             </td>
                             <td><span class="fw-bold text-lettuce">${{ zone.cost }}</span></td>
                             <td>
@@ -62,8 +62,8 @@
                                 <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger px-3">Inactiva</span>
                                 {% endif %}
                             </td>
-                            <td class="text-end">
-                                <div class="d-flex justify-content-end gap-2">
+                            <td class="text-end pe-3">
+                                <div class="d-flex justify-content-end gap-2 flex-wrap">
                                     <a href="{% url 'admin_toggle_zone' zone.id %}" class="btn btn-sm {% if zone.active %}btn-outline-secondary{% else %}btn-outline-success{% endif %} rounded-pill px-3">
                                         {% if zone.active %}Desactivar{% else %}Activar{% endif %}
                                     </a>

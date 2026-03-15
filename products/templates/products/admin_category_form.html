@@ -6,14 +6,14 @@
 {% block content %}
 <div class="row justify-content-center pb-5">
     <div class="col-lg-8 col-xl-6">
-        <div class="d-flex align-items-center gap-3 mb-4">
-            <a href="{% url 'admin_category_list' %}" class="btn-app bg-white shadow-sm px-3 py-2 text-decoration-none text-farm">
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-3 mb-4">
+            <a href="{% url 'admin_category_list' %}" class="btn-app bg-white shadow-sm px-3 py-2 text-decoration-none text-farm w-100 w-sm-auto text-center">
                 <i class="bi bi-arrow-left"></i> Volver
             </a>
-            <h2 class="fw-800 m-0 text-farm">{{ title }}</h2>
+            <h2 class="fw-800 m-0 text-farm fs-3 fs-md-2">{{ title }}</h2>
         </div>
 
-        <div class="card p-5 rounded-4 shadow-sm border-0 animate-up">
+        <div class="card p-3 p-md-5 rounded-4 shadow-sm border-0 animate-up">
             <h4 class="fw-800 text-farm mb-4 pb-2 border-bottom d-flex align-items-center gap-3">
                 <i class="bi bi-tags-fill text-lettuce"></i>
                 {% if category %}Editar: {{ category.name }}{% else %}Nueva Categoría{% endif %}
