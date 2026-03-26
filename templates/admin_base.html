@@ -279,7 +279,8 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
                 <div class="d-inline-flex justify-content-center align-items-center rounded-circle mb-2" style="width: 60px; height: 60px; background: rgba(0, 242, 96, 0.15);">
                     <i class="bi bi-gear-fill fs-2 m-0" style="color: var(--brand-farm);"></i>
                 </div>
-                <h3 class="fs-4 m-0">Admin</h3>
+                <h3 class="fs-4 m-0 text-farm fw-800">{{ user.get_full_name|default:user.username|title }}</h3>
+                <p class="text-muted small fw-bold m-0">@{{ user.username }}</p>
             </div>
 
             <div class="flex-grow-1 overflow-y-auto overflow-x-hidden mt-2 px-3">

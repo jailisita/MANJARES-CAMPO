@@ -87,16 +87,25 @@
                                     {% if form.price.errors %}<div class="text-danger small mt-1">{{ form.price.errors }}</div>{% endif %}
                                 </div>
 
-                                <div class="mb-3 p-3 rounded-4 bg-white shadow-sm border-2 border-dashed border-warning">
+                                <div id="discount-section" class="mb-3 p-3 rounded-4 bg-white shadow-sm border-2 border-dashed border-warning" style="display: none;">
                                     <div class="form-check form-switch mb-2">
                                         {{ form.is_on_offer }}
                                         <label class="form-check-label fw-bold text-warning small uppercase">Activar Oferta</label>
                                     </div>
-                                    <div class="input-group shadow-sm rounded-pill overflow-hidden border-2" style="border-color: var(--brand-light) !important;">
-                                        <span class="input-group-text bg-light border-0"><i class="bi bi-percent text-danger"></i></span>
-                                        {{ form.offer_price }}
+                                    <div id="percentage-input-group" style="display: none;">
+                                        <label class="form-label fw-bold text-farm small uppercase">Porcentaje de Descuento (%)</label>
+                                        <div class="input-group shadow-sm rounded-pill overflow-hidden border-2 mb-3" style="border-color: var(--brand-light) !important;">
+                                            <span class="input-group-text bg-light border-0"><i class="bi bi-percent text-danger"></i></span>
+                                            {{ form.discount_percentage }}
+                                        </div>
+                                        
+                                        <label class="form-label fw-bold text-farm small uppercase">Precio Final con Oferta</label>
+                                        <div class="input-group shadow-sm rounded-pill overflow-hidden border-2" style="border-color: var(--brand-light) !important;">
+                                            <span class="input-group-text bg-light border-0 text-farm fw-bold">$</span>
+                                            {{ form.offer_price }}
+                                        </div>
+                                        <div class="form-text x-small mt-1 text-danger fw-bold">Calculado automáticamente.</div>
                                     </div>
-                                    <div class="form-text x-small mt-1">Precio especial si está en oferta.</div>
                                 </div>
 
                                 <div class="form-check form-switch mt-3 bg-white p-3 rounded-4 shadow-sm">
@@ -167,13 +176,13 @@
                 <!-- Botones de Acción -->
                 <div class="col-12 mt-4">
                     <div class="card p-3 p-md-4 rounded-4 shadow-sm border-0 bg-white">
-                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center text-center text-md-start">
-                            <p class="text-muted m-0 small fw-bold uppercase letters-wide">Revisa que todos los campos sean correctos antes de guardar.</p>
-                            <div class="d-flex flex-column flex-sm-row gap-2 gap-md-3 w-100 w-md-auto">
-                                <a href="{% url 'admin_products_list' %}" class="btn btn-light rounded-pill px-5 py-2 py-md-3 fw-bold text-muted btn-animate w-100 w-sm-auto order-2 order-sm-1">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <p class="text-muted mb-3 small fw-bold uppercase letters-wide">Revisa que todos los campos sean correctos antes de guardar.</p>
+                            <div class="d-flex flex-row gap-2 gap-md-3 justify-content-center w-100">
+                                <a href="{% url 'admin_products_list' %}" class="btn btn-light rounded-pill px-4 px-md-5 py-2 py-md-3 fw-bold text-muted btn-animate">
                                     Cancelar
                                 </a>
-                                <button type="submit" class="btn-lettuce rounded-pill px-5 py-2 py-md-3 fw-bold shadow-lg btn-animate fs-5 w-100 w-sm-auto order-1 order-sm-2">
+                                <button type="submit" class="btn-lettuce rounded-pill px-4 px-md-5 py-2 py-md-3 fw-bold shadow-lg btn-animate fs-6">
                                     <i class="bi bi-check-lg me-2"></i>Guardar Cambios
                                 </button>
                             </div>
@@ -200,6 +209,58 @@
 document.getElementById('product-image-input').addEventListener('change', function(e) {
     const fileName = e.target.files[0] ? e.target.files[0].name : '';
     document.getElementById('file-name').textContent = 'Seleccionado: ' + fileName;
+});
+
+// Lógica de cálculo de descuento automático
+document.addEventListener('DOMContentLoaded', function() {
+    const priceInput = document.getElementById('id_price');
+    const isOfferCheckbox = document.getElementById('id_is_on_offer');
+    const discountInput = document.getElementById('id_discount_percentage');
+    const offerPriceInput = document.getElementById('id_offer_price');
+    const discountSection = document.getElementById('discount-section');
+    const percentageGroup = document.getElementById('percentage-input-group');
+
+    function calculateOffer() {
+        const price = parseFloat(priceInput.value) || 0;
+        const discount = parseFloat(discountInput.value) || 0;
+        
+        if (isOfferCheckbox.checked && price > 0) {
+            const finalPrice = price - (price * (discount / 100));
+            offerPriceInput.value = finalPrice.toFixed(2);
+        } else {
+            offerPriceInput.value = "";
+        }
+    }
+
+    function toggleDiscountUI() {
+        if (parseFloat(priceInput.value) > 0) {
+            discountSection.style.display = 'block';
+        } else {
+            discountSection.style.display = 'none';
+        }
+
+        if (isOfferCheckbox.checked) {
+            percentageGroup.style.display = 'block';
+        } else {
+            percentageGroup.style.display = 'none';
+        }
+    }
+
+    priceInput.addEventListener('input', () => {
+        toggleDiscountUI();
+        calculateOffer();
+    });
+
+    isOfferCheckbox.addEventListener('change', () => {
+        toggleDiscountUI();
+        calculateOffer();
+    });
+
+    discountInput.addEventListener('input', calculateOffer);
+
+    // Inicializar
+    toggleDiscountUI();
+    calculateOffer();
 });
 </script>
 {% endblock %}

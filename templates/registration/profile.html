@@ -27,6 +27,49 @@
             </div>
         </div>
 
+        <!-- Información Personal -->
+        <div class="card p-4 p-md-5 rounded-4 shadow-sm border-0 mb-4 animate-up">
+            <h4 class="fw-800 text-farm mb-4 pb-2 border-bottom">
+                <i class="bi bi-person-fill me-2 text-lettuce"></i>Información Personal
+            </h4>
+            <p class="text-muted small mb-4">Actualiza tu nombre y apellido. El nombre de usuario se generará automáticamente.</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="update_profile" value="1">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-farm small uppercase letters-wide">Nombre</label>
+                        <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border-2" style="border-color: var(--brand-light) !important;">
+                            <span class="input-group-text bg-light border-0"><i class="bi bi-person-vcard-fill text-lettuce"></i></span>
+                            {{ user_form.first_name }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-farm small uppercase letters-wide">Apellido</label>
+                        <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border-2" style="border-color: var(--brand-light) !important;">
+                            <span class="input-group-text bg-light border-0"><i class="bi bi-person-vcard-fill text-lettuce"></i></span>
+                            {{ user_form.last_name }}
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-farm small uppercase letters-wide">Nombre de Usuario</label>
+                        <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border-2 bg-light" style="border-color: var(--brand-light) !important;">
+                            <span class="input-group-text bg-light border-0"><i class="bi bi-at text-lettuce"></i></span>
+                            {{ user_form.username }}
+                        </div>
+                        <div class="form-text x-small mt-1 text-muted ps-3">Generado automáticamente como nombre.apellido</div>
+                    </div>
+
+                    <div class="col-12 pt-3">
+                        <button type="submit" class="btn-lettuce w-100 rounded-pill py-3 fw-bold shadow-lg btn-animate fs-5">
+                            <i class="bi bi-check-lg me-2"></i>Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
         <!-- Formulario de Cambio de Contraseña -->
         <div class="card p-4 p-md-5 rounded-4 shadow-sm border-0 animate-up">
             <h4 class="fw-800 text-farm mb-4 pb-2 border-bottom">
@@ -36,8 +79,9 @@
 
             <form method="POST">
                 {% csrf_token %}
+                <input type="hidden" name="update_password" value="1">
                 <div class="row g-4">
-                    {% for field in form %}
+                    {% for field in password_form %}
                     <div class="col-12">
                         <label class="form-label fw-bold text-farm small uppercase letters-wide">{{ field.label }}</label>
                         <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border-2" style="border-color: var(--brand-light) !important;">
@@ -54,8 +98,8 @@
                     {% endfor %}
 
                     <div class="col-12 pt-3">
-                        <button type="submit" class="btn-lettuce w-100 rounded-pill py-3 fw-bold shadow-lg btn-animate fs-5">
-                            <i class="bi bi-check-lg me-2"></i>Actualizar Contraseña
+                        <button type="submit" class="btn-warning w-100 rounded-pill py-3 fw-bold shadow-lg btn-animate fs-5">
+                            <i class="bi bi-key-fill me-2"></i>Actualizar Contraseña
                         </button>
                     </div>
                 </div>
@@ -63,4 +107,30 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const firstNameInput = document.querySelector('input[name="first_name"]');
+    const lastNameInput = document.querySelector('input[name="last_name"]');
+    const usernameInput = document.querySelector('input[name="username"]');
+
+    function updateUsername() {
+        const first = firstNameInput.value.trim().toLowerCase().replace(/\s+/g, '');
+        const last = lastNameInput.value.trim().toLowerCase().replace(/\s+/g, '');
+        
+        if (first || last) {
+            let username = "";
+            if (first && last) {
+                username = `${first}.${last}`;
+            } else {
+                username = first || last;
+            }
+            usernameInput.value = username;
+        }
+    }
+
+    firstNameInput.addEventListener('input', updateUsername);
+    lastNameInput.addEventListener('input', updateUsername);
+});
+</script>
 {% endblock %}

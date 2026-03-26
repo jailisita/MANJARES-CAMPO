@@ -24,22 +24,37 @@ def login_success(request):
     else:
         return redirect('catalog')
 
+from .forms import UserProfileForm
+
 @login_required
 def profile_view(request):
     if request.method == 'POST':
-        # Usamos SetPasswordForm para que no pida la contraseña anterior
-        form = SetPasswordForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)  # Importante para mantener la sesión
-            messages.success(request, '¡Tu contraseña ha sido actualizada con éxito!')
-            return redirect('profile')
-        else:
-            messages.error(request, 'Por favor corrige los errores a continuación.')
+        if 'update_profile' in request.POST:
+            user_form = UserProfileForm(request.POST, instance=request.user)
+            password_form = SetPasswordForm(request.user)
+            if user_form.is_valid():
+                user_form.save()
+                messages.success(request, '¡Tu perfil ha sido actualizado con éxito!')
+                return redirect('profile')
+            else:
+                messages.error(request, 'Por favor corrige los errores en tu perfil.')
+        
+        elif 'update_password' in request.POST:
+            user_form = UserProfileForm(instance=request.user)
+            password_form = SetPasswordForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, '¡Tu contraseña ha sido actualizada con éxito!')
+                return redirect('profile')
+            else:
+                messages.error(request, 'Por favor corrige los errores en tu contraseña.')
     else:
-        form = SetPasswordForm(request.user)
+        user_form = UserProfileForm(instance=request.user)
+        password_form = SetPasswordForm(request.user)
     
     return render(request, 'registration/profile.html', {
-        'form': form,
+        'user_form': user_form,
+        'password_form': password_form,
         'active_nav': 'profile'
     })

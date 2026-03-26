@@ -12,13 +12,14 @@ class CategoryForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'category', 'price', 'is_on_offer', 'offer_price', 'unit', 'stock', 'min_stock', 'description', 'image', 'available']
+        fields = ['name', 'category', 'price', 'is_on_offer', 'discount_percentage', 'offer_price', 'unit', 'stock', 'min_stock', 'description', 'image', 'available']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control border-0 px-4', 'placeholder': 'Nombre del producto'}),
             'category': forms.Select(attrs={'class': 'form-select border-0 px-4'}),
-            'price': forms.NumberInput(attrs={'class': 'form-control border-0 px-4', 'placeholder': '0.00'}),
-            'is_on_offer': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'offer_price': forms.NumberInput(attrs={'class': 'form-control border-0 px-4', 'placeholder': '0.00'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control border-0 px-4', 'id': 'id_price', 'placeholder': '0.00'}),
+            'is_on_offer': forms.CheckboxInput(attrs={'class': 'form-check-input', 'id': 'id_is_on_offer'}),
+            'discount_percentage': forms.NumberInput(attrs={'class': 'form-control border-0 px-4', 'id': 'id_discount_percentage', 'placeholder': '0', 'min': '0', 'max': '100'}),
+            'offer_price': forms.NumberInput(attrs={'class': 'form-control border-0 px-4', 'id': 'id_offer_price', 'placeholder': '0.00', 'readonly': 'readonly'}),
             'unit': forms.Select(attrs={'class': 'form-select border-0 px-4'}),
             'stock': forms.NumberInput(attrs={'class': 'form-control border-0 px-4', 'placeholder': 'Cantidad'}),
             'min_stock': forms.NumberInput(attrs={'class': 'form-control border-0 px-4', 'placeholder': 'Mínimo'}),

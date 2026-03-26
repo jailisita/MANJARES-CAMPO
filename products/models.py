@@ -18,6 +18,7 @@ class Product(models.Model):
         ('libra', 'Libra'),
         ('unidad', 'Unidad'),
         ('combo', 'Combo'),
+        ('l', 'Litro'),
     ]
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -28,9 +29,19 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     image = models.ImageField(upload_to='products/', null=True, blank=True)
     is_on_offer = models.BooleanField(default=False, verbose_name="¿Está en oferta?")
+    discount_percentage = models.IntegerField(default=0, verbose_name="Porcentaje de descuento")
     offer_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Precio de oferta")
     available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.is_on_offer and self.discount_percentage > 0:
+            discount_amount = (self.price * self.discount_percentage) / 100
+            self.offer_price = self.price - discount_amount
+        elif not self.is_on_offer:
+            self.offer_price = None
+            self.discount_percentage = 0
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
