@@ -84,6 +84,11 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
     gap: 8px;
 }
 
+.btn-light-app {
+    background: #FFF !important;
+    border: 2px solid var(--brand-light) !important;
+}
+
 .btn-primary-app {
     background: var(--brand-lettuce);
     color: #FFF;
@@ -390,8 +395,8 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-head); font-weight: 800; }
                 <p class="text-secondary fw-medium m-0">Frescura y calidad, directo del productor a tu mesa.</p>
             </div>
             <div class="d-flex gap-3">
-                <a href="{{ SOCIAL_FACEBOOK_URL }}" class="btn-app btn-light-app px-3"><i class="bi bi-facebook fs-5 m-0 text-primary"></i></a>
-                <a href="{{ SOCIAL_INSTAGRAM_URL }}" class="btn-app btn-light-app px-3"><i class="bi bi-instagram fs-5 m-0 text-danger"></i></a>
+                <a href="{{ SOCIAL_FACEBOOK_URL }}" target="_blank" rel="noopener noreferrer" class="btn-app btn-light-app px-3"><i class="bi bi-facebook fs-5 m-0 text-primary"></i></a>
+                <a href="{{ SOCIAL_INSTAGRAM_URL }}" target="_blank" rel="noopener noreferrer" class="btn-app btn-light-app px-3"><i class="bi bi-instagram fs-5 m-0 text-danger"></i></a>
             </div>
         </div>
     </footer>
