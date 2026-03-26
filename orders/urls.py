@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (
     cart_view,
+    order_tracking,
     add_to_cart,
     update_cart_item,
     remove_from_cart,
@@ -12,6 +13,7 @@ from .views import (
     admin_orders_list,
     admin_order_detail,
     admin_update_order_status,
+    admin_confirm_order_payment,
     admin_shipping_zones,
     admin_delete_zone,
     admin_toggle_zone,
@@ -19,6 +21,7 @@ from .views import (
 
 urlpatterns = [
     path('carrito/', cart_view, name='cart_view'),
+    path('rastreo/', order_tracking, name='order_tracking'),
     path('carrito/agregar/<int:product_id>/', add_to_cart, name='add_to_cart'),
     path('carrito/actualizar/<int:product_id>/', update_cart_item, name='update_cart_item'),
     path('carrito/quitar/<int:product_id>/', remove_from_cart, name='remove_from_cart'),
@@ -30,6 +33,7 @@ urlpatterns = [
     path('dashboard/admin/orders/', admin_orders_list, name='admin_orders_list'),
     path('dashboard/admin/orders/<int:order_id>/', admin_order_detail, name='admin_order_detail'),
     path('dashboard/admin/orders/<int:order_id>/status/', admin_update_order_status, name='admin_update_order_status'),
+    path('dashboard/admin/orders/<int:order_id>/confirm-payment/', admin_confirm_order_payment, name='admin_confirm_order_payment'),
     path('dashboard/admin/shipping-zones/', admin_shipping_zones, name='admin_shipping_zones'),
     path('dashboard/admin/shipping-zones/delete/<int:zone_id>/', admin_delete_zone, name='admin_delete_zone'),
     path('dashboard/admin/shipping-zones/toggle/<int:zone_id>/', admin_toggle_zone, name='admin_toggle_zone'),

@@ -121,6 +121,13 @@
 
                 <form action="{% url 'checkout_whatsapp' %}" method="POST">
                     {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label text-secondary fw-semibold small">Tu Teléfono (WhatsApp)</label>
+                        <div class="input-group shadow-sm rounded-pill overflow-hidden border-2" style="border-color: var(--brand-light) !important;">
+                            <span class="input-group-text bg-light border-0"><i class="bi bi-whatsapp text-success"></i></span>
+                            <input type="tel" name="phone" required class="form-control border-0 px-3 py-2" placeholder="Ej: 3001234567" value="{{ user.profile.phone|default:'' }}">
+                        </div>
+                    </div>
                     <button type="submit" class="btn-app btn-primary-app w-100 py-3 d-flex justify-content-center text-white border-0" style="background: #25D366; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);">
                         <i class="bi bi-whatsapp me-2 fs-5"></i> Pedir por WhatsApp
                     </button>

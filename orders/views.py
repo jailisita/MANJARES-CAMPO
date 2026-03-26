@@ -42,6 +42,28 @@ def _get_shipping_cost(total_after_discount, shipping_opts):
 
 from .cart import Cart
 
+# --- RASTREO DE PEDIDOS ---
+
+def order_tracking(request):
+    order_id = request.GET.get('order_id')
+    order = None
+    error = None
+    
+    if order_id:
+        try:
+            # Quitamos el '#' si el usuario lo pone
+            clean_id = order_id.replace('#', '').strip()
+            order = Order.objects.get(id=int(clean_id))
+        except (Order.DoesNotExist, ValueError):
+            error = "No encontramos ningún pedido con ese código de rastreo."
+            
+    return render(request, 'orders/tracking.html', {
+        'order': order,
+        'error': error,
+        'order_id': order_id,
+        'active_nav': 'tracking'
+    })
+
 # --- VISTAS PÚBLICAS ---
 
 def cart_view(request):
@@ -94,8 +116,10 @@ def checkout_whatsapp(request):
         user, _ = User.objects.get_or_create(username='cliente_web', defaults={'is_active': False})
 
     # 3. Crear la Orden
+    phone = request.POST.get('phone', '')
     order = Order.objects.create(
         customer=user,
+        customer_phone=phone,
         status='pending',
         total=grand_total,
         delivery_method=shipping_opts.get('method', 'delivery'),
@@ -259,7 +283,58 @@ def admin_update_order_status(request, order_id):
     if status in dict(Order.STATUS_CHOICES):
         order.status = status
         order.save()
+        
+        # Notificación de WhatsApp por cambio de estado
+        customer_name = order.customer.get_full_name() or order.customer.username
+        status_label = order.get_status_display()
+        
+        wa_msg = f"¡Hola {customer_name}! 👋\n\nActualización de tu pedido #{order.id} 📦\n\n"
+        wa_msg += f"Estado actual: *{status_label}* ✅\n\n"
+        
+        if status == 'preparing':
+            wa_msg += "Estamos seleccionando los mejores productos para tu canasta. 🧺"
+        elif status == 'sent':
+            wa_msg += "¡Tu pedido ha sido despachado y va en camino! 🚚💨"
+        elif status == 'delivered':
+            wa_msg += "¡Pedido entregado con éxito! Que disfrutes la frescura del campo. 🌱😋"
+        elif status == 'cancelled':
+            wa_msg += "Tu pedido ha sido cancelado. Si tienes dudas, escríbenos por aquí. ❌"
+            
+        wa_msg += f"\n\nPuedes rastrear tu pedido aquí: {request.build_absolute_uri('/orders/rastreo/')}?order_id={order.id}"
+        
+        wa_link = f"https://wa.me/{order.customer_phone}?{urlencode({'text': wa_msg})}"
+        return redirect(wa_link)
+        
     return redirect('admin_order_detail', order_id=order.id)
+
+@staff_member_required(login_url='login')
+@require_POST
+def admin_confirm_order_payment(request, order_id):
+    """Confirma el pago de la orden, actualiza el estado y notifica al cliente."""
+    order = get_object_or_404(Order, id=order_id)
+    
+    # 1. Actualizar estado de la orden
+    order.status = 'confirmed'
+    order.save()
+    
+    # 2. Confirmar pagos asociados (si existen en el app payments)
+    try:
+        from payments.models import Payment
+        payments = Payment.objects.filter(order=order)
+        for p in payments:
+            p.confirmed = True
+            p.save()
+    except ImportError:
+        pass
+        
+    # 3. Preparar mensaje de WhatsApp para el cliente
+    config = SiteConfiguration.objects.first()
+    customer_name = order.customer.get_full_name() or order.customer.username
+    wa_msg = f"¡Hola {customer_name}! 👋\n\nTu pago del pedido #{order.id} ha sido CONFIRMADO. ✅\n\nCódigo de rastreo: *#{order.id}*\nEstado actual: *{order.get_status_display()}*\n\nYa estamos preparando tu cosecha. 🌱🏠\n\nPuedes seguir el progreso aquí: {request.build_absolute_uri('/orders/rastreo/')}?order_id={order.id}"
+    
+    wa_link = f"https://wa.me/{order.customer_phone}?{urlencode({'text': wa_msg})}"
+    
+    return redirect(wa_link)
 
 @staff_member_required(login_url='login')
 def order_invoice_pdf(request, order_id):

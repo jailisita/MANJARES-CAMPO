@@ -23,11 +23,11 @@ class Order(models.Model):
 
     STATUS_CHOICES = [
         ('pending', 'Nuevo pedido'),
-        ('confirmed', 'Confirmado'),
+        ('confirmed', 'Pedido confirmado'),
         ('preparing', 'En preparación'),
-        ('sent', 'Enviado'),
-        ('delivered', 'Entregado'),
-        ('cancelled', 'Cancelado'),
+        ('sent', 'Pedido enviado'),
+        ('delivered', 'Pedido entregado'),
+        ('cancelled', 'Pedido cancelado'),
     ]
 
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
