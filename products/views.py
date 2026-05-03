@@ -7,45 +7,56 @@ from .forms import ProductForm, CategoryForm
 from inventory.models import SiteConfiguration
 from django.conf import settings
 from django.utils.http import urlencode
+from MANJARESCAMPO.mock_data import get_mock_products, get_mock_categories
 
 def catalog(request):
     query = request.GET.get("q")
     cat_id = request.GET.get("cat")
     
-    products = Product.objects.filter(available=True)
-    offer_products = Product.objects.filter(available=True, is_on_offer=True).order_by("-created_at")[:4]
+    all_products = get_mock_products()
     
+    # Filtrar disponibles
+    products = [p for p in all_products if p.available]
+    
+    # Ofertas para hero
+    offer_products = [p for p in products if p.is_on_offer][:4]
+    
+    # Búsqueda manual
     if query:
-        products = products.filter(models.Q(name__icontains=query) | models.Q(description__icontains=query))
+        query = query.lower()
+        products = [p for p in products if query in p.name.lower() or query in p.description.lower()]
     
+    # Filtrado por categoría
     if cat_id:
-        products = products.filter(category_id=cat_id)
-        
-    products = products.order_by("-created_at")
+        products = [p for p in products if str(p.category_id) == str(cat_id)]
     
     return render(request, "products/catalog.html", {
         "products": products,
         "offer_products": offer_products,
-        "categories": Category.objects.all(),
+        "categories": get_mock_categories(),
         "search_query": query,
         "selected_cat": int(cat_id) if cat_id and cat_id.isdigit() else None,
         "active_nav": "catalog"
     })
 
 def offers(request):
-    products = Product.objects.filter(available=True, is_on_offer=True).order_by("-created_at")
+    all_products = get_mock_products()
+    products = [p for p in all_products if p.available and p.is_on_offer]
+    
     return render(request, "products/catalog.html", {
         "products": products,
-        "categories": Category.objects.all(),
+        "categories": get_mock_categories(),
         "active_nav": "offers",
         "title_suffix": "Mejores Ofertas"
     })
 
 def seasonal(request):
-    products = Product.objects.filter(available=True).order_by("-created_at")[:8]
+    all_products = get_mock_products()
+    products = [p for p in all_products if p.available][:8]
+    
     return render(request, "products/catalog.html", {
         "products": products,
-        "categories": Category.objects.all(),
+        "categories": get_mock_categories(),
         "active_nav": "seasonal",
         "title_suffix": "Productos de Temporada"
     })

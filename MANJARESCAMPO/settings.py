@@ -83,13 +83,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'MANJARESCAMPO.wsgi.application'
 
 
-# Database - Modo offline sin BD externa
+# Database - In-memory for Vercel/Mock mode
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "NAME": ":memory:",
     }
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 
 # Password validation
